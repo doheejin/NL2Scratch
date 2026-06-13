@@ -140,6 +140,11 @@ MODEL=runs/checkpoints/flan-t5-base-sft \
 
 All metrics — exact match, line-exact match, token F1, parser pass rate, SAC_nl, SAC_pseudo (avg / =100% / ≥85%) — are written to plain-text files under `${OUTPUT_ROOT}/eval_outputs/`.
 
+## Running Prompting Baselines
+
+... ADD Contents @Yang-Emily ...
+
+
 ## Hardware and runtime notes
 
 The bash launchers are intended for **a single Linux machine with one CUDA-capable GPU**. Training Qwen-7B (4-bit QLoRA) or Llama-8B (bf16 LoRA) at the default `--max-seq-length 768` needs roughly **40 GB of VRAM**; FLAN-T5-base fits comfortably in 24 GB. Inference (greedy or N=8 sampling) is comparable in memory but faster.
