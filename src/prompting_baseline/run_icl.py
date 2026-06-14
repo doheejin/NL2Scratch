@@ -30,11 +30,14 @@ DEFAULT_MAX_TOKENS = 1500
 DEFAULT_REASONING_EFFORT = "auto"
 DEFAULT_TEMPERATURE = None
 SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_ROOT = SCRIPT_DIR.parent
-DEFAULT_TRAIN_FILE = SCRIPT_DIR / "Updated_Dataset_May_NL2Scratch/splits/train.jsonl"
+REPO_ROOT = SCRIPT_DIR.parents[1]
+
+# Not bundled in this repo. Download/export the train split from Heejindo/nl2scratch
+# to this path, or pass --train_file to a local JSONL file.
+DEFAULT_TRAIN_FILE = REPO_ROOT / "data/splits/train.jsonl" 
 DEFAULT_DIAGNOSTIC_800_FILE = (
     REPO_ROOT
-    / "dataset_analysis/sac_primary_composite_secondary_subset/sac_primary_composite_secondary_800.jsonl"
+    / "data/test_sac_primary_subset_800.jsonl"
 )
 DEFAULT_OUTPUT_FILE = SCRIPT_DIR / "output/predictions_gpt54_diagnostic_800.jsonl"
 

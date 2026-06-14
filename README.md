@@ -17,11 +17,14 @@ NL2Scratch/
 │   │   ├── prepare_sft_data.py                # NL+pseudocode → SFT JSONL
 │   │   ├── train_causal_sft.py                # SFT for causal LMs (Qwen / Llama)
 │   │   └── train_t5.py                        # SFT for encoder-decoder (FLAN-T5)
-│   └── inference/
-│       ├── generate_predictions_select.py     # Causal-LM generation + multi-signal selection
-│       ├── generate_t5_predictions_select.py  # FLAN-T5 variant
-│       ├── evaluate_predictions.py            # EM / line-EM / token-F1 / SAC_nl / SAC_pseudo / parse rate
-│       └── vm_pseudocode_parser.mjs           # Scratchblocks parser (Node)
+│   ├── inference/
+│   │   ├── generate_predictions_select.py     # Causal-LM generation + multi-signal selection
+│   │   ├── generate_t5_predictions_select.py  # FLAN-T5 variant
+│   │   ├── evaluate_predictions.py            # EM / line-EM / token-F1 / SAC_nl / SAC_pseudo / parse rate
+│   │   └── vm_pseudocode_parser.mjs           # Scratchblocks parser (Node)
+│   └── prompting_baseline/
+│       ├── run_icl.py                         # OpenAI in-context prompting baseline
+│       └── results/                           # Saved prompting-baseline outputs
 └── scripts/
     ├── sft/                                   # Bash launchers for SFT
     └── eval/                                  # Bash launchers for evaluation
