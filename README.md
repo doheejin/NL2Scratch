@@ -145,7 +145,73 @@ All metrics — exact match, line-exact match, token F1, parser pass rate, SAC_n
 
 ## Running Prompting Baselines
 
-... ADD Contents @Yang-Emily ...
+Prompting baselines live under `src/prompting_baseline/`. The main entrypoint is
+`run_icl.py`, which retrieves few-shot examples from a local train JSONL file with
+a lightweight TF-IDF index, calls an OpenAI chat model, and writes JSONL predictions.
+
+The bundled diagnostic set can be used directly as the evaluation input:
+
+```bash
+export OPENAI_API_KEY=sk-...
+
+python3 src/prompting_baseline/run_icl.py \
+  --mode batch_submit \
+  --train_file data/splits/train.jsonl \
+  --test_file data/test_sac_primary_subset_800.jsonl \
+  --output_file src/prompting_baseline/output/gpt54_diag800_20shot.jsonl \
+  --model gpt-5.4 \
+  --nshot 20
+```
+
+`data/splits/train.jsonl` is not bundled in this repository. Export the train split
+from [`Heejindo/nl2scratch`](https://huggingface.co/datasets/Heejindo/nl2scratch)
+to that path, or pass `--train_file` to another local JSONL file with the same
+`key` / `nl` / `pseudocode` schema.
+
+The prompting runner supports four modes:
+
+| Mode            | Use case |
+|-----------------|----------|
+| `batch_submit`  | Create Batch API input, upload it, and print a `batch_id`. |
+| `batch_collect` | Download a completed batch and write final predictions. |
+| `batch_run`     | Submit, poll, and collect in one command. |
+| `sync`          | Run synchronous API calls; useful for small debug runs with `--max_samples`. |
+
+For asynchronous batches, collect results after the batch completes:
+
+```bash
+python3 src/prompting_baseline/run_icl.py \
+  --mode batch_collect \
+  --batch_id batch_xxx \
+  --output_file src/prompting_baseline/output/gpt54_diag800_20shot.jsonl
+```
+
+For quick debugging:
+
+```bash
+python3 src/prompting_baseline/run_icl.py \
+  --mode sync \
+  --train_file data/splits/train.jsonl \
+  --test_file data/test_sac_primary_subset_800.jsonl \
+  --output_file src/prompting_baseline/output/debug_5shot.jsonl \
+  --model gpt-5.4 \
+  --nshot 5 \
+  --max_samples 5
+```
+
+Prompting output rows use `predicted_pseudocode` and `gold_pseudocode`. Evaluate them
+with the shared metrics script by selecting the prediction field:
+
+```bash
+python3 src/inference/evaluate_predictions.py \
+  --pred-file src/prompting_baseline/output/gpt54_diag800_20shot.jsonl \
+  --prediction-field predicted_pseudocode \
+  --postprocess \
+  --parser src/inference/vm_pseudocode_parser.mjs
+```
+
+Previously generated prompting-baseline outputs are kept in
+`src/prompting_baseline/results/`.
 
 
 ## Hardware and runtime notes
