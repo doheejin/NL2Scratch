@@ -2,8 +2,8 @@
 # Sampling (T=0.7, top-p=0.9, N=8) + multi-signal selection for a FLAN-T5 checkpoint.
 # Set USE_PARSER=1 to enable the parser-conditioned selection variants.
 #
-#   Usage:  USE_PARSER=1  MODEL=runs/checkpoints/flan-t5-base-sft \
-#             bash scripts/eval/eval_t5_sampling.sh
+# [Usage]  USE_PARSER=1  MODEL=runs/checkpoints/flan-t5-base-sft \
+#            bash scripts/eval/eval_t5_sampling.sh
 
 set -euo pipefail
 

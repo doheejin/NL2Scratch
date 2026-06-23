@@ -3,7 +3,7 @@
 # Source = NL, target = pseudocode joined by newlines.
 # Loads the Heejindo/nl2scratch dataset directly from HuggingFace.
 #
-#   Usage:  bash scripts/sft/flan_sft.sh
+# [Usage]  bash scripts/sft/flan_sft.sh
 
 set -euo pipefail
 

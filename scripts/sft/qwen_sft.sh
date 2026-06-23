@@ -2,7 +2,7 @@
 # SFT of Qwen2.5-7B-Instruct using 4-bit QLoRA on a single ~40 GB GPU.
 # Loads the Heejindo/nl2scratch dataset directly from HuggingFace.
 #
-#   Usage:  HF_TOKEN=hf_xxx  bash scripts/sft/qwen_sft.sh
+# [Usage]  HF_TOKEN=hf_xxx  bash scripts/sft/qwen_sft.sh
 
 set -euo pipefail
 

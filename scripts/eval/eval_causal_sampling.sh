@@ -4,9 +4,9 @@
 #   first / likelihood / SAC, plus parse→{likelihood,SAC} when USE_PARSER=1
 # (Node.js required for the scratchblocks parser).
 #
-#   Qwen:   USE_PARSER=1  MODEL=satechi/qwen2.5-7b-sft-final-lr5e5-nl2scratch \
-#           BASE_MODEL=Qwen/Qwen2.5-7B-Instruct  HF_TOKEN=hf_xxx \
-#             bash scripts/eval/eval_causal_sampling.sh
+# [Usage]  Qwen:   USE_PARSER=1  MODEL=satechi/qwen2.5-7b-sft-final-lr5e5-nl2scratch \
+#            BASE_MODEL=Qwen/Qwen2.5-7B-Instruct  HF_TOKEN=hf_xxx \
+#            bash scripts/eval/eval_causal_sampling.sh
 
 set -euo pipefail
 
