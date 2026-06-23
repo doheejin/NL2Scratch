@@ -226,15 +226,18 @@ For SLURM clusters, wrap a launcher in a thin sbatch file:
 bash scripts/sft/qwen_sft.sh
 ```
 
-`HF_TOKEN` is **never hardcoded** — pass it via the environment when launching.
+`HF_TOKEN`: pass it via the environment when launching.
 
 ## Citation
 
 ```bibtex
-@inproceedings{nl2scratch,
-  title={NL2Scratch: An Executable Benchmark and Evaluation for Block-Based Programming},
-  author={...},
-  booktitle={...},
-  year={2026}
+@misc{do2026nl2scratche,
+      title={NL2Scratch: An Executable Benchmark and Evaluation for Block-Based Programming}, 
+      author={Heejin Do and Alexandre Ballenghien and Yang Wu and April Yi Wang},
+      year={2026},
+      eprint={2606.22061},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2606.22061}, 
 }
 ```
