@@ -7,3 +7,5 @@ datasets>=2.20
 bitsandbytes>=0.43  # 4-bit QLoRA for Qwen training
 sentencepiece       # FLAN-T5 tokenizer
 numpy
+openai
+tqdm

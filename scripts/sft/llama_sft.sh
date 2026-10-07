@@ -2,7 +2,7 @@
 # SFT of Llama-3.1-8B-Instruct using bf16 LoRA on a single ~40 GB GPU.
 # Loads the Heejindo/nl2scratch dataset directly from HuggingFace.
 #
-#   Usage:  HF_TOKEN=hf_xxx  bash scripts/sft/llama_sft.sh
+# [Usage]  HF_TOKEN=hf_xxx  bash scripts/sft/llama_sft.sh
 
 set -euo pipefail
 

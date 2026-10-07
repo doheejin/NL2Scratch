@@ -1,7 +1,7 @@
 #!/bin/bash
 # Greedy decoding for a FLAN-T5 (seq2seq) checkpoint on the SAC-primary 800 subset.
 #
-#   Usage:  MODEL=runs/checkpoints/flan-t5-base-sft  bash scripts/eval/eval_t5_greedy.sh
+# [Usage]  MODEL=runs/checkpoints/flan-t5-base-sft  bash scripts/eval/eval_t5_greedy.sh
 
 set -euo pipefail
 

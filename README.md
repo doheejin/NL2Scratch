@@ -17,11 +17,14 @@ NL2Scratch/
 │   │   ├── prepare_sft_data.py                # NL+pseudocode → SFT JSONL
 │   │   ├── train_causal_sft.py                # SFT for causal LMs (Qwen / Llama)
 │   │   └── train_t5.py                        # SFT for encoder-decoder (FLAN-T5)
-│   └── inference/
-│       ├── generate_predictions_select.py     # Causal-LM generation + multi-signal selection
-│       ├── generate_t5_predictions_select.py  # FLAN-T5 variant
-│       ├── evaluate_predictions.py            # EM / line-EM / token-F1 / SAC_nl / SAC_pseudo / parse rate
-│       └── vm_pseudocode_parser.mjs           # Scratchblocks parser (Node)
+│   ├── inference/
+│   │   ├── generate_predictions_select.py     # Causal-LM generation + multi-signal selection
+│   │   ├── generate_t5_predictions_select.py  # FLAN-T5 variant
+│   │   ├── evaluate_predictions.py            # EM / line-EM / token-F1 / SAC_nl / SAC_pseudo / parse rate
+│   │   └── vm_pseudocode_parser.mjs           # Scratchblocks parser (Node)
+│   └── prompting_baseline/
+│       ├── run_icl.py                         # OpenAI in-context prompting baseline
+│       └── results/                           # Saved prompting-baseline outputs
 └── scripts/
     ├── sft/                                   # Bash launchers for SFT
     └── eval/                                  # Bash launchers for evaluation
@@ -140,6 +143,77 @@ MODEL=runs/checkpoints/flan-t5-base-sft \
 
 All metrics — exact match, line-exact match, token F1, parser pass rate, SAC_nl, SAC_pseudo (avg / =100% / ≥85%) — are written to plain-text files under `${OUTPUT_ROOT}/eval_outputs/`.
 
+## Running Prompting Baselines
+
+Prompting baselines live under `src/prompting_baseline/`. The main entrypoint is
+`run_icl.py`, which retrieves few-shot examples from a local train JSONL file with
+a lightweight TF-IDF index, calls an OpenAI chat model, and writes JSONL predictions.
+
+The bundled diagnostic set can be used directly as the evaluation input:
+
+```bash
+export OPENAI_API_KEY=sk-...
+
+python3 src/prompting_baseline/run_icl.py \
+  --mode batch_submit \
+  --train_file data/splits/train.jsonl \
+  --test_file data/test_sac_primary_subset_800.jsonl \
+  --output_file src/prompting_baseline/output/gpt54_diag800_20shot.jsonl \
+  --model gpt-5.4 \
+  --nshot 20
+```
+
+`data/splits/train.jsonl` is not bundled in this repository. Export the train split
+from [`Heejindo/nl2scratch`](https://huggingface.co/datasets/Heejindo/nl2scratch)
+to that path, or pass `--train_file` to another local JSONL file with the same
+`key` / `nl` / `pseudocode` schema.
+
+The prompting runner supports four modes:
+
+| Mode            | Use case |
+|-----------------|----------|
+| `batch_submit`  | Create Batch API input, upload it, and print a `batch_id`. |
+| `batch_collect` | Download a completed batch and write final predictions. |
+| `batch_run`     | Submit, poll, and collect in one command. |
+| `sync`          | Run synchronous API calls; useful for small debug runs with `--max_samples`. |
+
+For asynchronous batches, collect results after the batch completes:
+
+```bash
+python3 src/prompting_baseline/run_icl.py \
+  --mode batch_collect \
+  --batch_id batch_xxx \
+  --output_file src/prompting_baseline/output/gpt54_diag800_20shot.jsonl
+```
+
+For quick debugging:
+
+```bash
+python3 src/prompting_baseline/run_icl.py \
+  --mode sync \
+  --train_file data/splits/train.jsonl \
+  --test_file data/test_sac_primary_subset_800.jsonl \
+  --output_file src/prompting_baseline/output/debug_5shot.jsonl \
+  --model gpt-5.4 \
+  --nshot 5 \
+  --max_samples 5
+```
+
+Prompting output rows use `predicted_pseudocode` and `gold_pseudocode`. Evaluate them
+with the shared metrics script by selecting the prediction field:
+
+```bash
+python3 src/inference/evaluate_predictions.py \
+  --pred-file src/prompting_baseline/output/gpt54_diag800_20shot.jsonl \
+  --prediction-field predicted_pseudocode \
+  --postprocess \
+  --parser src/inference/vm_pseudocode_parser.mjs
+```
+
+Previously generated prompting-baseline outputs are kept in
+`src/prompting_baseline/results/`.
+
+
 ## Hardware and runtime notes
 
 The bash launchers are intended for **a single Linux machine with one CUDA-capable GPU**. Training Qwen-7B (4-bit QLoRA) or Llama-8B (bf16 LoRA) at the default `--max-seq-length 768` needs roughly **40 GB of VRAM**; FLAN-T5-base fits comfortably in 24 GB. Inference (greedy or N=8 sampling) is comparable in memory but faster.
@@ -152,15 +226,18 @@ For SLURM clusters, wrap a launcher in a thin sbatch file:
 bash scripts/sft/qwen_sft.sh
 ```
 
-`HF_TOKEN` is **never hardcoded** — pass it via the environment when launching.
+`HF_TOKEN`: pass it via the environment when launching.
 
 ## Citation
 
 ```bibtex
-@inproceedings{nl2scratch,
-  title={NL2Scratch: An Executable Benchmark and Evaluation for Block-Based Programming},
-  author={...},
-  booktitle={...},
-  year={2026}
+@misc{do2026nl2scratche,
+      title={NL2Scratch: An Executable Benchmark and Evaluation for Block-Based Programming}, 
+      author={Heejin Do and Alexandre Ballenghien and Yang Wu and April Yi Wang},
+      year={2026},
+      eprint={2606.22061},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2606.22061}, 
 }
 ```

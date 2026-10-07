@@ -2,10 +2,10 @@
 """Build SFT-format JSONL (prompt + target + concatenated 'text' field) for the
 NL2Scratch causal-LM training, defaulting to the public HF dataset.
 
-Usage (default — load from HuggingFace):
+Usage (default -- load from HuggingFace):
     python3 src/training/prepare_sft_data.py --output-dir runs/sft_data/<tag>
 
-Override with local JSONL files (must each carry {key, nl, pseudocode}):
+Override with local JSONL files (must each carry {key, nl, scratchblocks pseudocode}):
     python3 src/training/prepare_sft_data.py \\
       --train data/train.jsonl --val data/val.jsonl --test data/test.jsonl \\
       --output-dir runs/sft_data/<tag>
